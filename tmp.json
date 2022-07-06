@@ -1,0 +1,52 @@
+{
+	"inbounds": [
+		{
+			"tag": "agentin",
+			"port": 4565,
+			"listen": "127.0.0.1",
+			"protocol": "vmess",
+			"settings": {
+				"clients": [
+					{
+						"id": "27dbf228-80fb-4633-a21e-f26802db9a70",
+						"level": 1,
+						"alterId": 64
+					}
+				]
+			},
+			"streamSettings": {
+				"network": "ws",
+				"security": "none",
+				"wsSettings": {
+					"path": "/serva"
+				}
+			}
+		}
+	],
+	"outbounds": [
+		{
+			"protocol": "vmess",
+			"settings": {
+				"vnext": [
+					{
+						"address": "211.2.54.3",
+						"port": 1865,
+						"users": [
+							{
+								"id": "0018c3cb-bc1e-43f8-a995-d42c2c392acf"
+							}
+						]
+					}
+				]
+			},
+			"tag": "agentout",
+			"streamSettings": {
+				"network": "ws",
+				"security": "none",
+				"wsSettings": {
+					"path": "/servb"
+				}
+			}
+		}
+	]
+}

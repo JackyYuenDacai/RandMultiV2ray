@@ -53,7 +53,6 @@ def detour_graph(edge_list,a,b):
 def generate_random_edge_list(count):
 	edge_list = []
 	for j in range(count):
-		#loaded_server[j]['uuid'] = uuid.uuid4()
 		edge_list.append(j)
 		edge_list.append((j+1)%count)
 	for j in range(int(count/2)+1):
@@ -67,7 +66,7 @@ def main():
 	loaded_server = loaded_config['servers']
 	server_count = len(loaded_server)
 	for j in range(server_count):
-		loaded_server[j]['uuid'] = uuid.uuid4()
+		loaded_server[j]['uuid'] = str(uuid.uuid4())
 	edge_list = generate_random_edge_list(server_count)
 
 	from_list = []
@@ -96,11 +95,16 @@ def main():
 	plt.show()
 
 	for node in loaded_server:
-
+		print("Configurating node "+node['alias'])
 		node_config = {}
 
-		node['Transport'] = para_init(node['host'],22,node['user'],node['password'])
+		if(node['is_using_key_file'] == False):
+			node['Transport'] = para_init(node['host'],22,node['user'],node['password'])
+		else:
+			node['Transport'] = para_init_key(node['host'],22,node['user'],node['key_file'])
+
 		res = ssh_single_cmd(node['Transport'],"ls /etc/v2ray/")
+
 		if("config.json" in res):
 			#Already Installed
 			print("Already Installed")
@@ -128,7 +132,7 @@ def main():
 		node['completed_config'] = prepared_dict
 		completed_config = json.dumps(node['completed_config'])
 		#END PREPARING CONFIG
-
+		print(completed_config)
 		with sftp_connect(node['Transport']).file("/etc/v2ray/config.json","w") as config_file:
 			config_file.write(completed_config)
 		
@@ -139,9 +143,8 @@ def main():
 		ssh_single_cmd(node['Transport'],"systemctl enable v2ray")
 		ssh_single_cmd(node['Transport'],"systemctl start v2ray")
 
+#check install
 #"bash <(curl -sL https://raw.githubusercontent.com/hijkpw/scripts/master/goV2.sh)"
-#read config
-#change config
 #write config
 #ufw allow
 #systemctl enable v2ray
